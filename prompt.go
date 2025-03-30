@@ -121,12 +121,16 @@ func (p *Prompt) feed(b []byte) (shouldExit bool, exec *Exec) {
 
 	switch key {
 	case Enter, ControlJ, ControlM:
-		p.renderer.BreakLine(p.buf)
+		if p.completion.enterToAccept && p.completion.active {
+			p.completion.accepted = true
+		} else {
+			p.renderer.BreakLine(p.buf)
 
-		exec = &Exec{input: p.buf.Text()}
-		p.buf = NewBuffer()
-		if exec.input != "" {
-			p.history.Add(exec.input)
+			exec = &Exec{input: p.buf.Text()}
+			p.buf = NewBuffer()
+			if exec.input != "" {
+				p.history.Add(exec.input)
+			}
 		}
 	case ControlC:
 		p.renderer.BreakLine(p.buf)
@@ -154,6 +158,7 @@ func (p *Prompt) feed(b []byte) (shouldExit bool, exec *Exec) {
 		if p.handleASCIICodeBinding(b) {
 			return
 		}
+		p.completion.accepted = false
 		p.buf.InsertText(string(b), false, true)
 	}
 

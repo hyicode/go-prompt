@@ -222,6 +222,14 @@ func OptionCompletionOnDown() Option {
 	}
 }
 
+// OptionCompletionEnterToAccept Enter key will accept the completion.
+func OptionCompletionEnterToAccept() Option {
+	return func(p *Prompt) error {
+		p.completion.enterToAccept = true
+		return nil
+	}
+}
+
 // SwitchKeyBindMode to set a key bind mode.
 // Deprecated: Please use OptionSwitchKeyBindMode.
 var SwitchKeyBindMode = OptionSwitchKeyBindMode

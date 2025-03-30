@@ -33,10 +33,13 @@ type CompletionManager struct {
 	tmp       []Suggest
 	max       uint16
 	completer Completer
+	active    bool
+	accepted  bool
 
 	verticalScroll int
 	wordSeparator  string
 	showAtStart    bool
+	enterToAccept  bool
 }
 
 // GetSelectedSuggestion returns the selected item.
@@ -65,6 +68,10 @@ func (c *CompletionManager) Reset() {
 
 // Update to update the suggestions.
 func (c *CompletionManager) Update(in Document) {
+	if c.accepted {
+		c.tmp = nil
+		return
+	}
 	c.tmp = c.completer(in)
 }
 
